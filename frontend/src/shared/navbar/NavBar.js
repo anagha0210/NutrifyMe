@@ -9,7 +9,7 @@ const NavBar = () => {
       <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
         <a href='/home' className='flex items-center'>
           <img
-            src='https://icon-library.com/images/food-app-icon/food-app-icon-0.jpg'
+            src='assets/food-app-icon.jpg'
             className='h-8 mr-3'
             alt='Flowbite Logo'
           />
