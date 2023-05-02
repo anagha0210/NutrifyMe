@@ -62,7 +62,7 @@ const ImageToText = ({ extractIngredients }) => {
     setOcr('')
     setLoading(true)
     Tesseract.recognize(
-      'https://tesseract.projectnaptha.com/img/eng_bw.png',
+      imageData,
       'eng',
       { logger: (m) => console.log(m) }
     )
