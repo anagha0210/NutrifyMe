@@ -59,6 +59,9 @@ users_schema = UserSchema(many=True)
 class Ingredient(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100))
+  # type would either be healthy or allergic
+  type = db.Column(db.String(100))  
+
     # foreign key
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
     nullable=False)
@@ -69,6 +72,14 @@ class Ingredient(db.Model):
 #     self.email_address=email_address
 #     self.password=password
 
+# Product Schema
+class IngredientSchema(ma.Schema):
+  class Meta:
+    fields = ('id', 'name','type', 'user_id')
+
+# Init schema
+ingredient_schema = IngredientSchema()
+ingredients_schema = IngredientSchema(many=True)
 
 # Ingredient Schema
 # class UserSchema(ma.Schema):

@@ -4,9 +4,25 @@ from flask import request
 from FoodRecommender import app 
 from FoodRecommender.models import Product,product_schema,products_schema
 from FoodRecommender.models import User,user_schema, users_schema
-from FoodRecommender.models import Ingredient
+from FoodRecommender.models import Ingredient, ingredient_schema, ingredients_schema
 from FoodRecommender import db
 from sqlalchemy.orm import joinedload
+import spacy 
+
+def textSimilarity(text1,text2):
+    # here check text similarity of a tweet and their retweet count
+    nlp = spacy.load("en_core_web_sm")
+    #nlp = spacy.load("en_core_web_md")
+
+    doc1 = nlp(text1)
+    doc2 = nlp(text2)
+    # print('T1 and T2',doc1.similarity(doc2)) 
+    return doc1.similarity(doc2)
+
+
+
+
+
 @app.route('/', methods=['GET'])
 def check_api():
   return "api is running"
@@ -52,13 +68,18 @@ def get_users():
 def add_profile():
  userId = request.json['userId']
  Ingredients = request.json['ingredients']
+ type = request.json['type']
  currentUser = User.query.filter_by(id=userId ).first()
  print("ingredients are", Ingredients, "and user is ", currentUser)
  try:
     for ingredient in Ingredients:
         # Post(title='Hello Python!', body='Python is pretty cool', category=py)    
-        p=Ingredient(name=ingredient,user=currentUser)    
+        print(ingredient)
+        p=Ingredient(name=ingredient, type=type ,user=currentUser)
+        print("ok")    
         currentUser.ingredients.append(p)
+        print("ok")    
+
         db.session.add(currentUser)
     db.session.commit()
 
@@ -69,32 +90,55 @@ def add_profile():
 # Get Profile
 @app.route('/profile/<id>', methods=['GET'])
 def get_profile(id):
-    query = User.query.options(joinedload('ingredients'))
-    for user in query:
-        print (user, user.ingredients)
-    return jsonify('profile extracted')
-#   product = User.query.get(id)
-#   return product_schema.jsonify(product)
+    attempted_user = User.query.filter_by(id=id ).first()
+    print("** attempted user is ", attempted_user)
+    return ingredients_schema.jsonify(attempted_user.ingredients)
+
+
+# check the healthy or allergic menu
+@app.route('/checkIngredients', methods=['POST'])
+def check_ingredients():
+  userId = request.json['userId']
+  ingredients = request.json['ingredients']
+  print('** ingredients are ', ingredients, " user Ingredients are ", userId)
+
+  # user profile
+  attempted_user = User.query.filter_by(id=userId ).first()
+  print("OK")
+  userIngredients=attempted_user.ingredients
+
+  print('** ingredients are ', ingredients, " user Ingredients are ", userIngredients)
+  # algorithm
+  allergicCount=0
+  if(userIngredients and ingredients):
+    for i in range(0, len(ingredients)):
+      for ingredient in userIngredients:
+        print( ingredient)
+        if(textSimilarity(ingredients[i],ingredient['name'])>=0.5):
+          if(ingredient['type']=='allergic'):
+            allergicCount=allergicCount+1
+
+  print("** allergic count is ", allergicCount)
+  if (allergicCount/len(ingredients)*100>50):
+    return jsonify("ingredients are allergic"),200
+  return jsonify("ingredients are healthy"),200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #//////////////////////////////////////////////////////////////////// Product Routes
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Create a Product
 @app.route('/product', methods=['POST'])
