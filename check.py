@@ -9,8 +9,12 @@ def textSimilarity(text1,text2):
 
     doc1 = nlp(text1)
     doc2 = nlp(text2)
+    return doc1.similarity(doc2)
     print('T1 and T2',doc1.similarity(doc2)) 
 
+count=textSimilarity('protein12', 'allergic1')
+if(count>=0.5):
+    print("count is true")
 
-textSimilarity('ahm1','ahmad1')
+print("count is false", count)
 

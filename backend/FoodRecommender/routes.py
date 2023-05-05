@@ -113,9 +113,12 @@ def check_ingredients():
   if(userIngredients and ingredients):
     for i in range(0, len(ingredients)):
       for ingredient in userIngredients:
-        print( ingredient)
-        if(textSimilarity(ingredients[i],ingredient['name'])>=0.5):
-          if(ingredient['type']=='allergic'):
+        # print( ingredient.name)
+        # print( ingredient.type)
+
+        if(textSimilarity(ingredients[i],ingredient.name)>=0.8):
+          print("check true ", ingredients[i],ingredient.name, " and ingredient type is ",ingredient.type)
+          if(ingredient.type=='allergic'):
             allergicCount=allergicCount+1
 
   print("** allergic count is ", allergicCount)
