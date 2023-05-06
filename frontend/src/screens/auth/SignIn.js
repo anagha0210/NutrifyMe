@@ -3,10 +3,15 @@ import FormInput from './components/FormInput'
 import { useNavigate } from 'react-router-dom'
 import Button from './components/Button'
 
-const SignIn = ({ viewHandler }) => {
+// api integration
+import axiosClient from 'apiReq/axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+const SignIn = ({ viewHandler, routeChange, setRouteChange }) => {
   const navigate = useNavigate()
   const [person, setPerson] = useState({
-    email: '',
+    emailAddress: '',
     password: '',
   })
   const handleChange = (e) => {
@@ -15,7 +20,23 @@ const SignIn = ({ viewHandler }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    navigate('/home')
+    axiosClient
+      .post('signIn', person)
+      .then((resp) => {
+        toast.success('LogIn successfull', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
+        localStorage.setItem('userData', JSON.stringify(resp?.data))
+        setRouteChange(!routeChange)
+        navigate('/home')
+      })
+      .catch(() => {
+        toast.error('Invalid Credentials', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
+      })
   }
 
   return (
@@ -38,8 +59,8 @@ const SignIn = ({ viewHandler }) => {
               <FormInput
                 label='email'
                 type='email'
-                name='email'
-                value={person.email}
+                name='emailAddress'
+                value={person.emailAddress}
                 onChange={handleChange}
                 placeholder='name@company.com'
                 required={true}
@@ -77,6 +98,8 @@ const SignIn = ({ viewHandler }) => {
                 </div>
               </div>
               <Button type='submit' title={'Sign in'} />
+              <ToastContainer />
+
               <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
                 Don’t have an account yet?{' '}
                 <button

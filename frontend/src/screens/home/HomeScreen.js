@@ -61,11 +61,7 @@ const ImageToText = ({ extractIngredients }) => {
     if (!imageData) return
     setOcr('')
     setLoading(true)
-    Tesseract.recognize(
-      imageData,
-      'eng',
-      { logger: (m) => console.log(m) }
-    )
+    Tesseract.recognize(imageData, 'eng', { logger: (m) => console.log(m) })
       .then(({ data: { text } }) => {
         setOcr(text)
         extractIngredients(text)

@@ -1,4 +1,3 @@
-from re import I
 from flask import jsonify
 from flask import request
 from FoodRecommender import app 

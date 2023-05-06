@@ -1,0 +1,6 @@
+pip install -U Flask-SQLAlchemy
+pip install flask_marshmallow
+pip install -U spacy
+spacy download en_core_web_sm
+
+// Run project with ctrl+F5 
