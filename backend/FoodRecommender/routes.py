@@ -72,7 +72,7 @@ def add_profile():
  currentUser = User.query.filter_by(id=userId ).first()
 
 #  delete previous profile
- db.session.query(Ingredient).filter(Ingredient.user_id == userId).delete()
+ db.session.query(Ingredient).filter(Ingredient.user_id == userId,Ingredient.type==type).delete()
  try:
     for ingredient in Ingredients:
         # Post(title='Hello Python!', body='Python is pretty cool', category=py)    
@@ -118,7 +118,8 @@ def check_ingredients():
         # print( ingredient.name)
         # print( ingredient.type)
 
-        if(textSimilarity(ingredients[i],ingredient.name)>=0.8):
+        print("checking....", ingredients[i].lower(),ingredient.name.lower())
+        if(textSimilarity(ingredients[i].lower(),ingredient.name.lower())>=0.8):
           print("check true ", ingredients[i],ingredient.name, " and ingredient type is ",ingredient.type)
           if(ingredient.type=='allergic'):
             allergicCount=allergicCount+1

@@ -17,6 +17,7 @@ const HomeScreen = () => {
 
   const [chocolateLoading, setChocolateLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [recommendations, setRecommendations] = useState()
 
   const extractIngredients = (ocrText) => {
     let ls = ocrText.split(' ')
@@ -77,12 +78,12 @@ const HomeScreen = () => {
   const getRecommendedChocolates = () => {
     setChocolateLoading(true)
     axiosClient
-      .post('checkIngredients1', {
+      .post('recommendChocolates', {
         userId: storedData?.id,
-        ingredients: ingredients,
       })
       .then((resp) => {
         setChocolateLoading(false)
+        setRecommendations(resp?.data)
         // setMessage('The ingredients of this chocolate are healthy for you')
       })
       .catch(() => {
@@ -109,6 +110,27 @@ const HomeScreen = () => {
             handleClick={getRecommendedChocolates}
             loading={chocolateLoading}
           />
+
+          {recommendations && (
+            <div>
+              <p className='text-[20px] font-bold text-center'>
+                Recommended chocolates based on your profile:
+              </p>
+              {recommendations.length > 0 ? (
+                recommendations?.map((chocolate) => {
+                  return (
+                    <p className='text-[16px] text-green-500 font-semibold'>
+                      {chocolate}
+                    </p>
+                  )
+                })
+              ) : (
+                <p className='text-[16px] text-red-500 font-semibold'>
+                  Sorry No recommended chocolate for you
+                </p>
+              )}
+            </div>
+          )}
 
           <ImageToText extractIngredients={extractIngredients} />
           <SelectedIngredients

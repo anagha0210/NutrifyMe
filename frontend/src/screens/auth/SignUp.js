@@ -33,8 +33,8 @@ const SignUp = ({ viewHandler, routeChange, setRouteChange }) => {
         setRouteChange(!routeChange)
         navigate('/profile')
       })
-      .catch(() => {
-        toast.error('Invalid/Incomplete form', {
+      .catch((err) => {
+        toast.error(err?.response?.data, {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         })

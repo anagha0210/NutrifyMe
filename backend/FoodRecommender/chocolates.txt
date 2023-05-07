@@ -2,9 +2,9 @@ DairMilk: sugar,milk,cocoa,lactose
 Kitkat: sugar,milk,cocoa,lactose
 Sonnet: sugar,milk,cocoa,lactose
 Snickers: sugar,milk,cocoa,lactose
-Mars: sugar,milk,cocoa,lactose
-Munch: sugar,milk,cocoa,lactose
-Milka: sugar,milk,cocoa,lactose
-Dove: sugar,milk,cocoa,lactose
-Perk: sugar,milk,cocoa,lactose
+Mars: artificial flavors,soy,lactose
+Munch: sugar,milk,soy,lactose,vanilin
+Milka: sugar,milk,soy,lactose,vanilin
+Dove: soy,lactose,vanilin
+Perk: sugar,milk,soy,lactose,vanilin
 
