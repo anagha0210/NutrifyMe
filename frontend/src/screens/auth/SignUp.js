@@ -4,12 +4,17 @@ import { useNavigate } from 'react-router-dom'
 import FormInput from './components/FormInput'
 import Button from './components/Button'
 
-const SignUp = ({ viewHandler }) => {
+// api integration
+import axiosClient from 'apiReq/axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+const SignUp = ({ viewHandler, routeChange, setRouteChange }) => {
   const navigate = useNavigate()
 
   const [person, setPerson] = useState({
     name: '',
-    email: '',
+    emailAddress: '',
     password: '',
   })
   const handleChange = (e) => {
@@ -17,7 +22,23 @@ const SignUp = ({ viewHandler }) => {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    navigate('/profile')
+    axiosClient
+      .post('register', person)
+      .then((resp) => {
+        toast.success('Registered successfully', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
+        localStorage.setItem('userData', JSON.stringify(resp?.data))
+        setRouteChange(!routeChange)
+        navigate('/profile')
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
+      })
   }
 
   return (
@@ -53,8 +74,8 @@ const SignUp = ({ viewHandler }) => {
               <FormInput
                 label='email'
                 type='email'
-                name='email'
-                value={person.email}
+                name='emailAddress'
+                value={person.emailAddress}
                 onChange={handleChange}
                 placeholder='name@company.com'
                 required={true}
@@ -70,6 +91,7 @@ const SignUp = ({ viewHandler }) => {
               />
 
               <Button type='submit' title={'Register'} />
+              <ToastContainer />
 
               <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
                 Already have an account?{' '}

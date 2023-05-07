@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import logo from './logo.svg'
 
 import {
@@ -17,9 +18,14 @@ import ProfileScreen from 'screens/proflle/ProfileScreen'
 // components
 import NavBar from 'shared/navbar/NavBar'
 function App() {
+  const [routeChange, setRouteChange] = useState(false)
   let routes
 
-  const token = false
+  let token = false
+  const storedData = JSON.parse(localStorage.getItem('userData'))
+  if (storedData) {
+    token = true
+  }
 
   // const userState = useSelector((state) => state.auth)
   // const dispatch = useDispatch()
@@ -48,19 +54,27 @@ function App() {
   //   // This will be called only once i.e. on the first render of app
   // }, [])
 
-  routes = token ? (
+  routes = !token ? (
     <Routes>
-      {/* <Route path='/' element={<Auth token={token} />}></Route> */}
-      <Route path='/' element={<HomeScreen />}></Route>
+      <Route
+        path='/'
+        element={
+          <Auth routeChange={routeChange} setRouteChange={setRouteChange} />
+        }
+      ></Route>
+      <Route
+        path='/auth'
+        element={
+          <Auth routeChange={routeChange} setRouteChange={setRouteChange} />
+        }
+      ></Route>
       <Route path='/*' element={<Navigate to='/' />}></Route>
     </Routes>
   ) : (
     <Routes>
-      <Route path='/' element={<Auth />}></Route>
-      <Route path='/auth' element={<Auth />}></Route>
+      <Route path='/' element={<HomeScreen />}></Route>
       <Route path='/home' element={<HomeScreen />}></Route>
       <Route path='/profile' element={<ProfileScreen />}></Route>
-
       <Route path='/*' element={<Navigate to='/' />}></Route>
     </Routes>
   )
@@ -69,7 +83,11 @@ function App() {
     // <p className='text-3xl font-bold underline bg-red-500'>Hello world!</p>
     <Router basename='/'>
       <div className='max-w-[1600px] relative overflow-hidden m-auto flex flex-col self-center font-normal font-poppins text-[#333333]'>
-        <NavBar />
+        <NavBar
+          token={token}
+          routeChange={routeChange}
+          setRouteChange={setRouteChange}
+        />
         <div className='flex'>{routes}</div>
       </div>
     </Router>

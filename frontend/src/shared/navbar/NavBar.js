@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-const NavBar = () => {
+const NavBar = ({ token, routeChange, setRouteChange }) => {
   const location = useLocation()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const logOut = () => {
+    setRouteChange(!routeChange)
+    localStorage.clear()
+  }
   return (
     <nav className='bg-white border-gray-200 dark:bg-gray-900'>
       <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
@@ -51,7 +55,7 @@ const NavBar = () => {
               <a
                 href='/home'
                 className={` ${
-                  location.pathname === '/'
+                  location.pathname === '/' || location.pathname === '/home'
                     ? 'text-white md:text-blue-700 bg-blue-700 md:dark:text-blue-500'
                     : ''
                 }  block py-2 pl-3 pr-4   rounded md:bg-transparent md:p-0 dark:text-white `}
@@ -71,6 +75,17 @@ const NavBar = () => {
                 Profile
               </a>
             </li>
+            {token && (
+              <li>
+                <button
+                  className={`
+                  block py-2 pl-3 pr-4   rounded md:bg-transparent md:p-0 dark:text-white hover:text-blue-700 `}
+                  onClick={logOut}
+                >
+                  Log Out
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
