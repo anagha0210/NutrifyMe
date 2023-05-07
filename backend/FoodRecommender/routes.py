@@ -1,12 +1,13 @@
 from flask import jsonify
 from flask import request
 from FoodRecommender import app 
-from FoodRecommender.models import Product,product_schema,products_schema
 from FoodRecommender.models import User,user_schema, users_schema
 from FoodRecommender.models import Ingredient, ingredient_schema, ingredients_schema
 from FoodRecommender import db
 from sqlalchemy.orm import joinedload
 import spacy 
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 def textSimilarity(text1,text2):
     # here check text similarity of a tweet and their retweet count
@@ -69,7 +70,9 @@ def add_profile():
  Ingredients = request.json['ingredients']
  type = request.json['type']
  currentUser = User.query.filter_by(id=userId ).first()
- print("ingredients are", Ingredients, "and user is ", currentUser)
+
+#  delete previous profile
+ db.session.query(Ingredient).filter(Ingredient.user_id == userId).delete()
  try:
     for ingredient in Ingredients:
         # Post(title='Hello Python!', body='Python is pretty cool', category=py)    
@@ -84,7 +87,7 @@ def add_profile():
 
     return jsonify(Ingredients),200
  except:
-    return jsonify("failed"),4004
+    return jsonify("failed"),404
 
 # Get Profile
 @app.route('/profile/<id>', methods=['GET'])
@@ -124,78 +127,49 @@ def check_ingredients():
     if (allergicCount/len(ingredients)*100>50):
       return jsonify("ingredients are allergic"),200
   return jsonify("ingredients are healthy"),200
+
   
-  
 
 
 
+# check the healthy or allergic menu
+@app.route('/recommendChocolates', methods=['POST'])
+def recommend_chocolates():  
+  userId = request.json['userId']
+  # user profile
+  attempted_user = User.query.filter_by(id=userId ).first()
+  userIngredients=attempted_user.ingredients
+  userHealthIngredients=[]
+
+  for ingredient in userIngredients:
+    if ingredient.type=='healthy':
+      userHealthIngredients.append(ingredient.name)
+
+  print(userHealthIngredients)
+
+  recommendations=[]
+  with open(os.path.join(basedir,'./chocolates.txt')) as f:
+      print("ok")
+      lines = f.readlines()
+      for line in lines:     
+        # print("Line", line.strip())
+        line= line.strip()
+        if(line):
+          chocolateName=line.split(':')[0]
+          ingredients=line.split(':')[1].strip().split(',')
+          # print("chocolate name :", chocolateName)
+          # print("ingredients are :", ingredients)
+
+          # Algorithm
+          healthCount=0
+          for ingredient in ingredients:
+            if ingredient in userHealthIngredients:
+              healthCount=healthCount+1
+
+          if(healthCount>len(userHealthIngredients)/2):
+            recommendations.append(chocolateName) 
+  print("all recommendations are ", recommendations)
+  return (recommendations),200
 
 
 
-
-
-
-
-
-
-
-
-
-
-#//////////////////////////////////////////////////////////////////// Product Routes
-
-# Create a Product
-@app.route('/product', methods=['POST'])
-def add_product():
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
-
-  new_product = Product(name, description, price, qty)
-
-  db.session.add(new_product)
-  db.session.commit()
-
-  return product_schema.jsonify(new_product)
-
-# Get All Products
-@app.route('/product', methods=['GET'])
-def get_products():
-  all_products = Product.query.all()
-  result = products_schema.dump(all_products)
-  return jsonify(result)
-
-# Get Single Products
-@app.route('/product/<id>', methods=['GET'])
-def get_product(id):
-  product = Product.query.get(id)
-  return product_schema.jsonify(product)
-
-# Update a Product
-@app.route('/product/<id>', methods=['PUT'])
-def update_product(id):
-  product = Product.query.get(id)
-
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
-
-  product.name = name
-  product.description = description
-  product.price = price
-  product.qty = qty
-
-  db.session.commit()
-
-  return product_schema.jsonify(product)
-
-# Delete Product
-@app.route('/product/<id>', methods=['DELETE'])
-def delete_product(id):
-  product = Product.query.get(id)
-  db.session.delete(product)
-  db.session.commit()
-
-  return product_schema.jsonify(product)

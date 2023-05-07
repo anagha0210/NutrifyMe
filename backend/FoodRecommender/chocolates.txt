@@ -1,0 +1,10 @@
+DairMilk: sugar,milk,cocoa,lactose
+Kitkat: sugar,milk,cocoa,lactose
+Sonnet: sugar,milk,cocoa,lactose
+Snickers: sugar,milk,cocoa,lactose
+Mars: sugar,milk,cocoa,lactose
+Munch: sugar,milk,cocoa,lactose
+Milka: sugar,milk,cocoa,lactose
+Dove: sugar,milk,cocoa,lactose
+Perk: sugar,milk,cocoa,lactose
+
