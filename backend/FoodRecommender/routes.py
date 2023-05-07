@@ -120,10 +120,12 @@ def check_ingredients():
           if(ingredient.type=='allergic'):
             allergicCount=allergicCount+1
 
-  print("** allergic count is ", allergicCount)
-  if (allergicCount/len(ingredients)*100>50):
-    return jsonify("ingredients are allergic"),200
+    print("** allergic count is ", allergicCount)
+    if (allergicCount/len(ingredients)*100>50):
+      return jsonify("ingredients are allergic"),200
   return jsonify("ingredients are healthy"),200
+  
+  
 
 
 

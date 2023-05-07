@@ -6,7 +6,7 @@ export const SelectedIngredients = ({
   handleDelete,
 }) => {
   return (
-    <div className='bg-gray-100 lg:w-[400px] overflow-auto border-2 border-black h-[250px] p-4 rounded-[12px] flex gap-2 flex-wrap'>
+    <div className='bg-gray-100 w-full sm:w-[400px] overflow-auto border-2 border-black h-[250px] p-4 rounded-[12px] flex gap-2 flex-wrap'>
       {ingredients?.map((ingredient, index) => {
         return (
           <Ingredient

@@ -4,11 +4,30 @@ import { SelectedIngredients } from 'shared/SelectedIngredient'
 import Button from 'screens/auth/components/Button'
 import Tesseract from 'tesseract.js'
 import Spinner from 'shared/Spinner'
+// api integration
+import axiosClient from 'apiReq/axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 const HomeScreen = () => {
+  const storedData = JSON.parse(localStorage.getItem('userData'))
+
   const [ingredients, setIngredients] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const [chocolateLoading, setChocolateLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
   const extractIngredients = (ocrText) => {
-    setIngredients(ocrText.split(' '))
+    let ls = ocrText.split(' ')
+    console.log('*list is', ls)
+    ls = ls?.map((ingredient) => {
+      if (ingredient?.length > 2) {
+        return ingredient
+      }
+    })
+    console.log('*list is', ls)
+    setIngredients(ls)
   }
 
   const handleChange = (index, value) => {
@@ -27,7 +46,53 @@ const HomeScreen = () => {
     tempList.splice(index, 1)
     setIngredients([...tempList])
   }
-  const getRecommendations = () => {}
+  const getRecommendations = () => {
+    if (ingredients.length > 0) {
+      setLoading(true)
+      axiosClient
+        .post('checkIngredients', {
+          userId: storedData?.id,
+          ingredients: ingredients,
+        })
+        .then((resp) => {
+          setLoading(false)
+          if (resp?.data === 'ingredients are healthy') {
+            setMessage('The ingredients of this chocolate are healthy for you')
+          } else {
+            setMessage(
+              'The chocolate contains allergic ingredients and could be harmful for you'
+            )
+          }
+        })
+        .catch(() => {
+          setLoading(false)
+
+          toast.error('Network error: please try later', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          })
+        })
+    }
+  }
+  const getRecommendedChocolates = () => {
+    setChocolateLoading(true)
+    axiosClient
+      .post('checkIngredients1', {
+        userId: storedData?.id,
+        ingredients: ingredients,
+      })
+      .then((resp) => {
+        setChocolateLoading(false)
+        // setMessage('The ingredients of this chocolate are healthy for you')
+      })
+      .catch(() => {
+        setChocolateLoading(false)
+        toast.error('Network error: please try later', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
+      })
+  }
 
   return (
     <div className='w-full min-h-screen bg-gray-50 flex flex-col items-center'>
@@ -38,15 +103,31 @@ const HomeScreen = () => {
           </p>
           <p>We recommend food on the basis of your food profile</p>
         </div>
-        <div className='w-[400px] h-full flex flex-col gap-2'>
+        <div className='w-full sm:w-[400px] h-full flex flex-col gap-2'>
+          <Button
+            title='Recommend Chocolates'
+            handleClick={getRecommendedChocolates}
+            loading={chocolateLoading}
+          />
+
           <ImageToText extractIngredients={extractIngredients} />
           <SelectedIngredients
             ingredients={ingredients}
             handleChange={handleChange}
             handleDelete={handleDelete}
           />
-          <Button title='Submit' handleClick={getRecommendations} />
+          <Button
+            title='Submit'
+            handleClick={getRecommendations}
+            loading={loading}
+          />
         </div>
+        {message && (
+          <div>
+            <p className='text-[20px] font-bold'>Result:</p>
+            <p className='text-[16px] text-red-500 font-semibold'>{message}</p>
+          </div>
+        )}
       </div>
     </div>
   )
