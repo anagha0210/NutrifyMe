@@ -9,16 +9,16 @@ const NavBar = ({ token, routeChange, setRouteChange }) => {
     localStorage.clear()
   }
   return (
-    <nav className='bg-white border-gray-200 dark:bg-gray-900'>
+    <nav className='bg-white border-gray-200 dark:bg-gray-900 z-10 relative'>
       <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
         <a href='/home' className='flex items-center'>
           <img
-            src='assets/food-app-icon.jpg'
+            src='assets/omgfinally.png'
             className='h-8 mr-3'
             alt='Flowbite Logo'
           />
           <span className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white'>
-            FoodApp
+            NutrifyMe-An Ingredient Analyzer Just For You!
           </span>
         </a>
         <button

@@ -167,7 +167,7 @@ def recommend_chocolates():
             if ingredient in userHealthIngredients:
               healthCount=healthCount+1
 
-          if(healthCount>len(userHealthIngredients)/2):
+          if(healthCount>len(userHealthIngredients)/1): #method to change the % of result accuracy, ex: 50% indicates that if 50% of tags are healthy,result is healthy.
             recommendations.append(chocolateName) 
   print("all recommendations are ", recommendations)
   return (recommendations),200

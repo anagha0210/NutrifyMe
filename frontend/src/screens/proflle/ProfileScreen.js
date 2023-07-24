@@ -9,7 +9,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { SelectedIngredients } from 'shared/SelectedIngredient'
 const ProfileScreen = () => {
   return (
-    <div className='w-full min-h-screen bg-gray-50 flex flex-col lg:flex-row'>
+    <div className='w-full min-h-screen bg-gray-50 flex flex-col lg:flex-row relative'>
+      <img src="assets/profileff.jpg" width='100%' className="absolute" />
       <IngredientScreen
         id='favourite'
         title={'Healthy ingredients'}
@@ -122,13 +123,14 @@ const IngredientScreen = ({ id, title, subTitle }) => {
   }, [])
 
   return (
-    <div className='w-full lg:w-[50%] lg:min-h-screen flex justify-center pt-8 p-2'>
+    <div className='w-full lg:w-[50%] lg:min-h-screen flex justify-center pt-8 p-2 z-10'>
       {/* all selected inputs */}
-
+      
       <div className='flex flex-col gap-4'>
+
         <div>
           <p className='text-[20px] font-semibold'>{title}</p>
-          <p>please input all of your {subTitle} ingredients one by one</p>
+          <p>Please input all of your {subTitle} ingredients one by one</p>
         </div>
 
         {/* added ingredients */}
@@ -136,9 +138,10 @@ const IngredientScreen = ({ id, title, subTitle }) => {
           <FormInput
             label='Enter Ingredient'
             type='text'
+            text='black'
             value={inputIngredient}
             onChange={(e) => setInputIngredient(e.target.value)}
-            placeholder='sugar...'
+            placeholder='Example: sugar...'
             required={true}
           />
 

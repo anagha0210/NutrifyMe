@@ -67,7 +67,6 @@ const HomeScreen = () => {
         })
         .catch(() => {
           setLoading(false)
-
           toast.error('Network error: please try later', {
             position: toast.POSITION.TOP_RIGHT,
             autoClose: 3000,
@@ -84,7 +83,7 @@ const HomeScreen = () => {
       .then((resp) => {
         setChocolateLoading(false)
         setRecommendations(resp?.data)
-        // setMessage('The ingredients of this chocolate are healthy for you')
+        setMessage('The ingredients of this chocolate are healthy for you')
       })
       .catch(() => {
         setChocolateLoading(false)
@@ -96,13 +95,14 @@ const HomeScreen = () => {
   }
 
   return (
-    <div className='w-full min-h-screen bg-gray-50 flex flex-col items-center'>
-      <div className='w-[80%] flex flex-col gap-4'>
+    <div className='w-full min-h-screen bg-gray-50 flex flex-col items-center relative '>
+      <img src="assets/pbg.jpeg" width='99.99%' height='70%' className="absolute" />
+      <div className='w-[80%] flex flex-col gap-4 z-10'>
         <div>
           <p className='text-[20px] font-semibold'>
-            Ingredient Recommender System
+            Recommendation for You ^-^
           </p>
-          <p>We recommend food on the basis of your food profile</p>
+          <p>Here is what we recommend based on your profile!</p>
         </div>
         <div className='w-full sm:w-[400px] h-full flex flex-col gap-2'>
           <Button
@@ -114,7 +114,7 @@ const HomeScreen = () => {
           {recommendations && (
             <div>
               <p className='text-[20px] font-bold text-center'>
-                Recommended chocolates based on your profile:
+                Recommend Chocolates
               </p>
               {recommendations.length > 0 ? (
                 recommendations?.map((chocolate) => {
@@ -126,13 +126,13 @@ const HomeScreen = () => {
                 })
               ) : (
                 <p className='text-[16px] text-red-500 font-semibold'>
-                  Sorry No recommended chocolate for you
+                  Sorry, Seems like there's no recommended chocolate for you..
                 </p>
               )}
             </div>
           )}
 
-          <ImageToText extractIngredients={extractIngredients} />
+          <ImageToText extractIngredients={extractIngredients} />  
           <SelectedIngredients
             ingredients={ingredients}
             handleChange={handleChange}
@@ -155,7 +155,7 @@ const HomeScreen = () => {
   )
 }
 
-const ImageToText = ({ extractIngredients }) => {
+const ImageToText = ({ extractIngredients }) => {     //fetching the ingredients
   const [ocr, setOcr] = useState('')
   const [imageData, setImageData] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -221,7 +221,7 @@ const ImageToText = ({ extractIngredients }) => {
         </div>
       ) : (
         <div className='w-full text-black mt-2'>
-          <p>{ocr}</p>
+          <p>{ocr}</p>                                     
         </div>
       )}
     </div>
